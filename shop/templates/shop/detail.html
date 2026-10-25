@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ product.name }} — Gemma{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/shop.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="page-head">
+    <div class="container py-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-2">
+                <li class="breadcrumb-item"><a href="{% url 'shop:product_list' %}">Catalog</a></li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'shop:product_list_by_stone' product.stone.slug %}">{{ product.stone.name }}</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+            </ol>
+        </nav>
+        <h1 class="h2 mb-0">{{ product.name }}</h1>
+    </div>
+</div>
+
+<section class="py-5">
+    <div class="container">
+        <div class="row g-5">
+            <div class="col-md-6">
+                <div class="ratio ratio-1x1 rounded overflow-hidden product-photo">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="object-fit-cover">
+                    {% else %}
+                        <img src="{% static 'images/default_product.png' %}" alt="" class="object-fit-cover">
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <a href="{% url 'shop:product_list_by_stone' product.stone.slug %}" class="stone-tab active mb-3">
+                    {{ product.stone.name }}
+                </a>
+                <p class="product-card__kind">{{ product.get_kind_display }}</p>
+                <p class="product-detail__price">{{ product.price }} ₽</p>
+
+                <div class="card mb-4">
+                    <div class="card-body">{{ product.description|linebreaks }}</div>
+                </div>
+
+                <form action="{% url 'orders:cart_add' product.id %}" method="post" class="d-flex gap-2 mb-4">
+                    {% csrf_token %}
+                    <input type="number" name="quantity" value="1" min="1" max="20"
+                           class="form-control qty-input" aria-label="Quantity">
+                    <button type="submit" class="btn btn-primary flex-grow-1">Add to cart</button>
+                </form>
+
+                <a href="{% url 'shop:product_list_by_stone' product.stone.slug %}" class="btn btn-outline-primary">
+                    ← More with {{ product.stone.name }}
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

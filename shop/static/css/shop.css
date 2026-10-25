@@ -1,0 +1,197 @@
+/* ==========================================================
+   Gemma — shop styles: stone tabs, product cards, cart, checkout
+   ========================================================== */
+
+/* ---------- Stone tabs (replace the tag cloud) ---------- */
+.stone-tabs {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.75rem;
+}
+
+.stone-tabs__list {
+    display: flex;
+    flex: 1;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0.15rem 0;
+    list-style: none;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+}
+.stone-tabs__list::-webkit-scrollbar { display: none; }
+.stone-tabs__list li { flex: 0 0 auto; }
+
+.stone-tab {
+    display: inline-block;
+    padding: 0.4rem 1.1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 2rem;
+    background: #fff;
+    color: var(--text-color);
+    font-size: 0.92rem;
+    font-weight: 500;
+    white-space: nowrap;
+    text-decoration: none;
+    transition: all var(--transition);
+}
+.stone-tab:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-dark);
+}
+.stone-tab.active {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    color: #fff;
+}
+
+.stone-tabs__arrow {
+    flex: 0 0 auto;
+    width: 2rem;
+    height: 2rem;
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    background: #fff;
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: all var(--transition);
+}
+.stone-tabs__arrow:hover:not(:disabled) {
+    background: var(--primary-color);
+    color: #fff;
+}
+.stone-tabs__arrow:disabled { opacity: 0.35; cursor: default; }
+
+.stone-description {
+    max-width: 48rem;
+    color: var(--muted-color);
+    margin-bottom: 1.5rem;
+}
+
+/* ---------- Product card ---------- */
+.product-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0.75rem 1.5rem rgba(28, 28, 34, 0.1);
+}
+
+.product-card .ratio { background: var(--primary-light); }
+.product-card img { transition: transform 0.4s ease; }
+.product-card:hover img { transform: scale(1.04); }
+
+.product-card__kind {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted-color);
+}
+.product-card__price {
+    font-family: var(--font-heading);
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+/* the title link is stretched over the card; keep the button clickable */
+.product-card__form { position: relative; z-index: 2; }
+
+/* ---------- Product detail ---------- */
+.product-photo { background: var(--primary-light); border: 1px solid var(--border-color); }
+.product-detail__price {
+    font-family: var(--font-heading);
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+.qty-input { width: 5rem; flex: 0 0 auto; }
+
+/* ---------- Cart ---------- */
+.cart-item .card-body {
+    display: grid;
+    grid-template-columns: 5rem 1fr auto auto auto;
+    align-items: center;
+    gap: 1rem;
+}
+.cart-item__image {
+    width: 5rem;
+    height: 5rem;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    background: var(--primary-light);
+}
+.cart-item__image img { width: 100%; height: 100%; object-fit: cover; }
+.cart-item__qty { display: flex; gap: 0.4rem; align-items: center; }
+.cart-item__sum {
+    min-width: 5.5rem;
+    text-align: right;
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+.cart-item__remove {
+    border: 0;
+    background: transparent;
+    font-size: 1.6rem;
+    line-height: 1;
+    color: var(--muted-color);
+    cursor: pointer;
+}
+.cart-item__remove:hover { color: #b3261e; }
+
+/* ---------- Summary ---------- */
+.summary-card { background: var(--primary-bg-color); }
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.35rem 0;
+}
+.summary-row--total {
+    margin-top: 0.5rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border-color);
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+/* ---------- Checkout form (Django widgets) ---------- */
+.card form input[type="text"],
+.card form input[type="tel"],
+.card form input[type="email"],
+.card form textarea,
+.card form select {
+    display: block;
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font: inherit;
+    background: #fff;
+}
+.card form input:focus,
+.card form textarea:focus,
+.card form select:focus {
+    outline: 0;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 0.2rem rgba(184, 137, 59, 0.2);
+}
+.field-error { margin-top: 0.25rem; font-size: 0.85rem; color: #b3261e; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 767.98px) {
+    .cart-item .card-body {
+        grid-template-columns: 4rem 1fr auto;
+        grid-template-areas:
+            "img info remove"
+            "qty qty sum";
+    }
+    .cart-item__image { grid-area: img; width: 4rem; height: 4rem; }
+    .cart-item__info { grid-area: info; }
+    .cart-item__qty { grid-area: qty; }
+    .cart-item__sum { grid-area: sum; }
+    .cart-item .card-body > form:last-child { grid-area: remove; }
+    .stone-tabs__arrow { display: none; }
+}

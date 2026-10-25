@@ -1,0 +1,23 @@
+{% load static %}
+<article class="card product-card h-100 overflow-hidden">
+    <div class="ratio ratio-1x1">
+        {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="object-fit-cover" loading="lazy">
+        {% else %}
+            <img src="{% static 'images/default_product.png' %}" alt="" class="object-fit-cover" loading="lazy">
+        {% endif %}
+    </div>
+    <div class="card-body d-flex flex-column gap-2">
+        <p class="product-card__kind mb-0">{{ product.get_kind_display }} · {{ product.stone.name }}</p>
+        <h2 class="h6 mb-0">
+            <a href="{{ product.get_absolute_url }}" class="stretched-link text-body">{{ product.name }}</a>
+        </h2>
+        <p class="product-card__price mt-auto mb-0">{{ product.price }} ₽</p>
+
+        <form action="{% url 'orders:cart_add' product.id %}" method="post" class="product-card__form">
+            {% csrf_token %}
+            <input type="hidden" name="quantity" value="1">
+            <button type="submit" class="btn btn-primary btn-sm w-100">Add to cart</button>
+        </form>
+    </div>
+</article>
