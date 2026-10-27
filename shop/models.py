@@ -6,6 +6,7 @@ from .upload_paths import product_image_path
 class Stone(models.Model):
     name = models.CharField(max_length=100)
     slug = models.SlugField(max_length=100)
+    description = models.TextField(blank=True)
 
     class Meta:
         ordering = ['name']
@@ -14,7 +15,7 @@ class Stone(models.Model):
         ]
 
     def get_absolute_url(self):
-        return reverse('shop:product_list', args=[self.slug])
+        return reverse('shop:product_list_by_stone', args=[self.slug])
     
 class Product(models.Model):
     name = models.CharField(max_length=100)
@@ -26,6 +27,15 @@ class Product(models.Model):
     available = models.BooleanField(default=True)
     stock = models.PositiveIntegerField(default=0)
     created = models.DateTimeField(auto_now_add=True)
+
+    class Type(models.TextChoices):
+        RING = 'ring', 'Ring'
+        EARRINGS = 'earrings', 'Earrings'
+        NECKLACE = 'necklace', 'Necklace'
+        BRACELET = 'bracelet', 'Bracelet'
+        PENDANT = 'pendant', 'Pendant'
+
+    type = models.CharField(max_length=20, choices=Type.choices, default=Type.RING)
 
     class Meta:
         ordering = ['name']

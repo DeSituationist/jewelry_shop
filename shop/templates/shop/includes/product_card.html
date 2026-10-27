@@ -14,7 +14,7 @@
         </h2>
         <p class="product-card__price mt-auto mb-0">{{ product.price }} ₽</p>
 
-        <form action="{% url 'orders:cart_add' product.id %}" method="post" class="product-card__form">
+        <form action="{% url 'cart:cart_add' product.id %}" method="post" class="product-card__form">
             {% csrf_token %}
             <input type="hidden" name="quantity" value="1">
             <button type="submit" class="btn btn-primary btn-sm w-100">Add to cart</button>

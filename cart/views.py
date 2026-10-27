@@ -3,20 +3,18 @@ from django.views.decorators.http import require_POST
 from shop.models import Product
 from .cart import Cart
 from .forms import CartAddProductForm
+from django.contrib import messages
 
 # Create your views here.
 @require_POST
 def cart_add(request, product_id):
     cart = Cart(request)
-    product = get_object_or_404(Product, id=product_id)
-    form = CartAddProductForm()
+    product = get_object_or_404(Product, id=product_id, available=True)
+    form = CartAddProductForm(request.POST)
     if form.is_valid():
         cd = form.cleaned_data
-        cart.add(
-            product=product,
-            quantity=cd['quantity'],
-            override_quantity=cd['override'],
-        )
+        if cart.add(product, cd['quantity'], cd['override']):
+            messages.warning(request, f'Left {product.stock} amount of "{product.name}".')
     return redirect('cart:cart_detail')
 
 @require_POST

@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Cart — Gemma{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/shop.css' %}">{% endblock %}
+
+{% block content %}
+<div class="page-head"><div class="container py-4"><h1 class="h2 mb-0">Cart</h1></div></div>
+<section class="py-5"><div class="container">
+{% if cart|length %}
+	<div class="row g-5">
+		<div class="col-lg-8 d-flex flex-column gap-3">
+			{% for item in cart %}{% with product=item.product %}
+			<article class="card cart-item"><div class="card-body">
+				<div class="cart-item__image">
+					<img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'images/default_product.png' %}{% endif %}" alt="{{ product.name }}">
+				</div>
+				<div class="cart-item__info">
+					<a href="{{ product.get_absolute_url }}" class="text-body">{{ product.name }}</a>
+					<p class="small text-muted mb-0">{{ item.price }} ₽ · {{ product.stock }} in stock</p>
+					{% if item.quantity > product.stock %}
+						<p class="field-error mb-0">Only {{ product.stock }} left, please update.</p>
+					{% endif %}
+				</div>
+				<form action="{% url 'cart:cart_add' product.id %}" method="post" class="cart-item__qty">
+					{% csrf_token %}
+					<input type="hidden" name="override" value="True">
+					<input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="{{ product.stock }}" class="form-control qty-input" aria-label="Quantity">
+					<button type="submit" class="btn btn-outline-primary btn-sm">Update</button>
+				</form>
+				<div class="cart-item__sum">{{ item.total_price }} ₽</div>
+				<form action="{% url 'cart:cart_remove' product.id %}" method="post">
+					{% csrf_token %}<button type="submit" class="cart-item__remove" aria-label="Remove">×</button>
+				</form>
+			</div></article>
+			{% endwith %}{% endfor %}
+		</div>
+		<div class="col-lg-4">
+			<div class="card summary-card"><div class="card-body">
+				<div class="summary-row"><span>Items</span><span>{{ cart|length }}</span></div>
+				<div class="summary-row summary-row--total"><span>Total</span><span>{{ cart.get_total_sum }} ₽</span></div>
+				<a href="{% url 'orders:order_create' %}" class="btn btn-primary w-100 mt-3">Checkout</a>
+			</div></div>
+		</div>
+	</div>
+{% else %}
+	<p class="mb-3">Your cart is empty.</p>
+	<a href="{% url 'shop:product_list' %}" class="btn btn-outline-primary">← Back to catalog</a>
+{% endif %}
+</div></section>
+{% endblock %}

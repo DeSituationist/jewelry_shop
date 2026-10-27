@@ -1,3 +1,4 @@
+import copy
 from decimal import Decimal
 from django.conf import settings
 from shop.models import Product
@@ -5,22 +6,19 @@ from shop.models import Product
 class Cart:
     def __init__(self, request):
         self.session = request.session
-        cart = self.session.get(settings.CART_SESSION_ID)
-        if not cart:
-            cart = self.session[settings.CART_SESSION_ID] = {}
-        self.cart = cart
+        self.cart = self.session.setdefault(settings.CART_SESSION_ID, {})
 
     def add(self, product, quantity=1, override_quantity=False):
         product_id = str(product.id)
-        if product_id not in self.cart:
-            self.cart[product_id] = {'quantity': 0, 'price': str(product.price)}
-
-        if override_quantity:
-            self.cart[product_id]['quantity'] = quantity
-        else:
-            self.cart[product_id]['quantity'] += quantity
-
+        current_amount = self.cart.get(product_id, {}).get('quantity', 0)
+        wanted_amount = quantity if override_quantity else current_amount + quantity
+        possible_amount = min(wanted_amount, product.stock)
+        if possible_amount <= 0:
+            self.remove(product)
+            return True
+        self.cart[product_id] = {'quantity': possible_amount, 'price': str(product.price)}
         self.save()
+        return possible_amount < wanted_amount
 
     def save(self):
         self.session.modified = True
@@ -32,17 +30,14 @@ class Cart:
             self.save()
 
     def __iter__(self):
-        product_ids = self.cart.keys()
-        products = Product.objects.filter(id__in=product_ids)
-        cart = self.cart.copy()
-
-        for product in products:
-            cart[str(product.id)]['product'] = product
-
-        for item in cart.values():
-            item['price'] = Decimal(item['price'])
-            item['total_price'] = item['price'] * item['quantity']
-            yield item
+        products = Product.objects.in_bulk([int(product_id)] for product_id in self.cart)
+        for product_id, data in copy.deepcopy(self.cart).items:
+            product = products.get(int(product_id))
+            if product is None: continue
+            data['product'] = product
+            data['price'] = product.price
+            data['total_price'] = product.price * data['quantity']
+            yield data
 
     def  __len__(self):
         return sum(item['quantity'] for item in self.cart.values())
