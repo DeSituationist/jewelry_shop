@@ -1,15 +1,13 @@
 services:
   db:
     image: postgres:17-alpine
-    container_name: jewelry_shop
+    container_name: jewelry_shop_db
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+    ports: ["5432:5432"]
+    volumes: [postgres_data:/var/lib/postgresql/data]
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
       interval: 5s
@@ -17,5 +15,50 @@ services:
       retries: 10
     restart: unless-stopped
 
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: jewelry_shop_rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER:-guest}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS:-guest}
+    ports:
+      - "5672:5672"      
+      - "15672:15672"    
+    volumes: [rabbitmq_data:/var/lib/rabbitmq]
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  web:
+    build: .
+    container_name: jewelry_shop_web
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes: [".:/app"]
+    ports: ["8000:8000"]
+    env_file: [.env]
+    environment:
+      CELERY_BROKER_URL: amqp://${RABBITMQ_DEFAULT_USER:-guest}:${RABBITMQ_DEFAULT_PASS:-guest}@rabbitmq:5672//
+    depends_on:
+      db:       { condition: service_healthy }
+      rabbitmq: { condition: service_healthy }
+    restart: unless-stopped
+
+  worker:
+    build: .
+    container_name: jewelry_shop_worker
+    command: celery -A jewelry_shop worker --loglevel=info
+    volumes: [".:/app"]
+    env_file: [.env]
+    environment:
+      CELERY_BROKER_URL: amqp://${RABBITMQ_DEFAULT_USER:-guest}:${RABBITMQ_DEFAULT_PASS:-guest}@rabbitmq:5672//
+    depends_on:
+      rabbitmq: { condition: service_healthy }
+      db:       { condition: service_healthy }
+    restart: unless-stopped
+
 volumes:
   postgres_data:
+  rabbitmq_data:

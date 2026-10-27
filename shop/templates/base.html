@@ -1,11 +1,11 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#1c1c22">
-    <meta name="description" content="{% block meta_description %}Handmade jewelry with natural stones{% endblock %}">
+    <meta name="description" content="{% block meta_description %}Украшения ручной работы с натуральными камнями{% endblock %}">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,32 +15,32 @@
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
     {% block extra_css %}{% endblock %}
 
-    <title>{% block title %}Gemma — Jewelry{% endblock %}</title>
+    <title>{% block title %}Gemma — Украшения{% endblock %}</title>
 </head>
 <body class="d-flex flex-column min-vh-100">
 
-<a class="skip-link" href="#main-content">Skip to content</a>
+<a class="skip-link" href="#main-content">Перейти к содержимому</a>
 
 <!-- Header -->
 <header class="site-header">
     <div class="container">
         <div class="site-header__inner">
-            <a href="{% url 'shop:product_list' %}" class="brand" aria-label="Home">
+            <a href="{% url 'shop:product_list' %}" class="brand" aria-label="На главную">
                 <span class="brand-mark" aria-hidden="true">G</span>
                 <span class="brand-text">
                     <span class="brand-title">Gemma</span>
-                    <span class="brand-subtitle">Jewelry with natural stones</span>
+                    <span class="brand-subtitle">Украшения с натуральными камнями</span>
                 </span>
             </a>
 
             <div class="header-info d-none d-lg-flex">
                 <div class="header-info__item">
-                    <span class="header-info__label">Order by phone</span>
+                    <span class="header-info__label">Заказ по телефону</span>
                     <a href="tel:+70000000000" class="header-info__value">+7 000 000-00-00</a>
                 </div>
                 <div class="header-info__item">
-                    <span class="header-info__label">Delivery</span>
-                    <span class="header-info__value">Worldwide</span>
+                    <span class="header-info__label">Доставка</span>
+                    <span class="header-info__value">По всему миру</span>
                 </div>
             </div>
         </div>
@@ -52,31 +52,31 @@
     <div class="container">
         <button class="navbar-toggler" type="button"
                 data-bs-toggle="collapse" data-bs-target="#mainNav"
-                aria-controls="mainNav" aria-expanded="false" aria-label="Open menu">
+                aria-controls="mainNav" aria-expanded="false" aria-label="Открыть меню">
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <a href="{% url 'cart:cart_detail' %}" class="nav-cart nav-cart--mobile d-lg-none" aria-label="Cart">
+        <a href="{% url 'cart:cart_detail' %}" class="nav-cart nav-cart--mobile d-lg-none" aria-label="Корзина">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                 <path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/>
             </svg>
-            <span class="cart-badge" data-cart-count>{{ cart.count }}</span>
+            <span class="cart-badge" data-cart-count>{{ cart|length }}</span>
         </a>
 
         <div class="collapse navbar-collapse" id="mainNav">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a href="{% url 'shop:product_list' %}" class="nav-link">Catalog</a>
+                    <a href="{% url 'shop:product_list' %}" class="nav-link">Каталог</a>
                 </li>
                 <li class="nav-item">
-                    <a href="{% url 'cart:cart_detail' %}" class="nav-link">Cart</a>
+                    <a href="{% url 'cart:cart_detail' %}" class="nav-link">Корзина</a>
                 </li>
             </ul>
 
             <form action="{% url 'shop:product_search' %}" method="get" class="search-form" role="search">
-                <label for="site-search" class="visually-hidden">Search the shop</label>
-                <input id="site-search" type="search" name="query" placeholder="Search..." required>
-                <button type="submit" aria-label="Search">
+                <label for="site-search" class="visually-hidden">Поиск по магазину</label>
+                <input id="site-search" type="search" name="query" placeholder="Поиск..." required>
+                <button type="submit" aria-label="Найти">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
                          stroke="currentColor" stroke-width="2.2" aria-hidden="true">
                         <circle cx="11" cy="11" r="7"/>
@@ -85,11 +85,11 @@
                 </button>
             </form>
 
-            <a href="{% url 'cart:cart_detail' %}" class="nav-cart d-none d-lg-inline-flex" aria-label="Cart">
+            <a href="{% url 'cart:cart_detail' %}" class="nav-cart d-none d-lg-inline-flex" aria-label="Корзина">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                     <path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/>
                 </svg>
-                <span class="cart-badge" data-cart-count>{{ cart.count }}</span>
+                <span class="cart-badge" data-cart-count>{{ cart|length }}</span>
             </a>
         </div>
     </div>
@@ -111,18 +111,18 @@
         <div class="site-footer__grid">
             <div class="site-footer__col">
                 <div class="site-footer__title">Gemma</div>
-                <p>Jewelry with natural stones</p>
-                <p>Handmade to order</p>
+                <p>Украшения с натуральными камнями</p>
+                <p>Ручная работа на заказ</p>
             </div>
 
             <div class="site-footer__col">
-                <div class="site-footer__title">Pages</div>
-                <p><a href="{% url 'shop:product_list' %}">Catalog</a></p>
-                <p><a href="{% url 'cart:cart_detail' %}">Cart</a></p>
+                <div class="site-footer__title">Страницы</div>
+                <p><a href="{% url 'shop:product_list' %}">Каталог</a></p>
+                <p><a href="{% url 'cart:cart_detail' %}">Корзина</a></p>
             </div>
 
             <div class="site-footer__col">
-                <div class="site-footer__title">Contacts</div>
+                <div class="site-footer__title">Контакты</div>
                 <p><a href="tel:+70000000000">+7 000 000-00-00</a></p>
                 <p><a href="mailto:hello@example.com">hello@example.com</a></p>
             </div>
@@ -130,7 +130,7 @@
 
         <div class="site-footer__bottom">
             <span>© 2026 Gemma</span>
-            <span>All rights reserved</span>
+            <span>Все права защищены</span>
         </div>
     </div>
 </footer>

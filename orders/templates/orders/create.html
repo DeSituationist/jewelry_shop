@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load static %}
+{% block extra_css %}
+	<link rel="stylesheet" href="{% static 'css/shop.css' %}">
+{% endblock %}
+{% block title %}Оформление заказа — Gemma{% endblock %}
+
+{% block content %}
+<div class="page-head">
+	<div class="container py-4">
+		<h1 class="h2 mb-0">Оформление заказа</h1>
+	</div>
+</div>
+
+<section class="py-5">
+	<div class="container">
+		<div class="row g-5">
+			<div class="col-lg-7">
+				<div class="card">
+					<div class="card-body">
+						<form method="post">
+							{% csrf_token %}
+							{% for field in form %}
+								<div class="mb-3">
+									<label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+									{{ field }}
+									{% for e in field.errors %}
+										<div class="field-error">{{ e }}</div>
+									{% endfor %}
+								</div>
+							{% endfor %}
+							<button type="submit" class="btn btn-primary w-100">Оформить заказ</button>
+						</form>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-5">
+				<div class="card summary-card">
+					<div class="card-body">
+						{% for item in cart %}
+							<div class="summary-row">
+								<span>{{ item.product.name }} × {{ item.quantity }}</span>
+								<span>{{ item.total_price }} ₽</span>
+							</div>
+						{% endfor %}
+						<div class="summary-row summary-row--total">
+							<span>Итого</span>
+							<span>{{ cart.get_total_sum }} ₽</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+{% endblock %}

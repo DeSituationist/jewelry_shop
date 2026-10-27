@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="utf-8">
+	<title>Заказ №{{ order.id }} оформлен</title>
+</head>
+<body style="margin: 0; padding: 0; background: #f4efe6; font-family: Arial, Helvetica, sans-serif; color: #25252b; line-height: 1.6;">
+	<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background: #f4efe6; padding: 32px 16px;">
+		<tr>
+			<td align="center">
+				<table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; background: #ffffff; border: 1px solid #e4ddd0; border-radius: 8px; overflow: hidden;">
+					<tr>
+						<td style="background: #1c1c22; padding: 22px 32px;">
+							<span style="display: inline-block; width: 42px; height: 42px; border-radius: 50%; border: 2px solid #b8893b; color: #b8893b; font-family: Georgia, serif; font-size: 22px; font-weight: 700; text-align: center; line-height: 42px;">G</span>
+							<span style="font-family: Georgia, serif; font-size: 22px; font-weight: 700; letter-spacing: 0.04em; color: #ffffff; margin-left: 12px; vertical-align: middle;">Gemma</span>
+						</td>
+					</tr>
+					<tr>
+						<td style="padding: 32px;">
+							<h1 style="font-family: Georgia, serif; font-size: 24px; color: #1c1c22; margin: 0 0 8px 0;">Спасибо за заказ, {{ order.first_name }}!</h1>
+							<p style="margin: 0 0 24px 0; color: #6f6f78;">
+								Заказ <strong style="color: #1c1c22;">№{{ order.id }}</strong> успешно оформлен.
+								{% if order.paid %}<br>Оплата получена — спасибо!{% endif %}
+							</p>
+							<table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;">
+								{% for item in order.items.all %}
+								<tr>
+									<td style="padding: 10px 0; border-bottom: 1px solid #e4ddd0; color: #25252b;">
+										{{ item.product.name }} <span style="color: #6f6f78;">× {{ item.quantity }}</span>
+									</td>
+									<td align="right" style="padding: 10px 0; border-bottom: 1px solid #e4ddd0; color: #25252b; white-space: nowrap;">{{ item.get_cost }} ₽</td>
+								</tr>
+								{% endfor %}
+								<tr>
+									<td style="padding: 16px 0 0 0; font-family: Georgia, serif; font-size: 18px; font-weight: 700; color: #1c1c22;">Итого</td>
+									<td align="right" style="padding: 16px 0 0 0; font-family: Georgia, serif; font-size: 18px; font-weight: 700; color: #1c1c22; white-space: nowrap;">{{ order.get_total_cost }} ₽</td>
+								</tr>
+							</table>
+							<p style="margin: 24px 0 0 0; color: #6f6f78;">
+								Адрес доставки: {{ order.city }}, {{ order.address }}, {{ order.postal_code }}
+							</p>
+						</td>
+					</tr>
+					<tr>
+						<td style="background: #faf8f4; padding: 20px 32px; border-top: 1px solid #e4ddd0; color: #6f6f78; font-size: 12px;">
+							Gemma — украшения с натуральными камнями<br>
+							Это письмо сформировано автоматически, не отвечайте на него.
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</body>
+</html>

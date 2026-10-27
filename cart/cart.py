@@ -30,8 +30,8 @@ class Cart:
             self.save()
 
     def __iter__(self):
-        products = Product.objects.in_bulk([int(product_id)] for product_id in self.cart)
-        for product_id, data in copy.deepcopy(self.cart).items:
+        products = Product.objects.in_bulk([int(product_id) for product_id in self.cart])
+        for product_id, data in copy.deepcopy(self.cart).items():
             product = products.get(int(product_id))
             if product is None: continue
             data['product'] = product
@@ -43,8 +43,12 @@ class Cart:
         return sum(item['quantity'] for item in self.cart.values())
 
     def get_total_sum(self):
-        return sum(Decimal(item['price']) * item['quantity'] for item in self.cart.values())
+        return sum(item["total_price"] for item in self)
 
     def clear(self):
-        del self.session[settings.CART_SESSION_ID]
+        self.session.pop(settings.CART_SESSION_ID, None)
         self.save()
+
+    @property
+    def positions(self):
+        return len(self.cart)

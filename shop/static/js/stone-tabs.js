@@ -1,4 +1,3 @@
-/* Stone tabs: horizontal scroll with arrow buttons, active tab scrolled into view */
 (function () {
     "use strict";
 
@@ -23,7 +22,6 @@
         list.addEventListener("scroll", update, { passive: true });
         window.addEventListener("resize", update);
 
-        // Bring the active stone into view on load
         var active = list.querySelector(".active");
         if (active) {
             list.scrollLeft = active.offsetLeft - (list.clientWidth - active.offsetWidth) / 2;

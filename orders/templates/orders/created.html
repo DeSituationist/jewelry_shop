@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Заказ оплачен — Gemma{% endblock %}
+
+{% block content %}
+<section class="py-5">
+	<div class="container text-center">
+		<h1 class="h2 mb-3">Спасибо за покупку!</h1>
+		<p>Ваш заказ <strong>№{{ order.id }}</strong> на сумму <strong>{{ order.get_total_cost }} ₽</strong> успешно оплачен (симуляция).</p>
+		<p class="text-muted small">Чек и детали заказа отправлены на {{ order.email }}.</p>
+		<a href="{% url 'shop:product_list' %}" class="btn btn-primary mt-3">Вернуться в каталог</a>
+	</div>
+</section>
+{% endblock %}

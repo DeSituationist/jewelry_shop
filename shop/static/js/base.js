@@ -1,4 +1,3 @@
-/* Global behaviour: close the mobile menu on link click */
 (function () {
     "use strict";
 

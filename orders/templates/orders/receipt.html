@@ -1,0 +1,66 @@
+{% load static %}<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="{% static 'css/base.css' %}">
+	<link rel="stylesheet" href="{% static 'css/shop.css' %}">
+	<style>
+		/* Переопределяем некоторые стили специально для PDF-страницы */
+		@page { size: A4; margin: 15mm; }
+		body { background: #fff; padding: 0; }
+		.pdf-header { border-bottom: 2px solid var(--accent-color); padding-bottom: 15px; margin-bottom: 25px; }
+		.pdf-brand-mark { width: 35px; height: 35px; font-size: 22px; line-height: 32px; }
+		.pdf-brand-title { font-size: 24px; vertical-align: middle; margin-left: 10px; }
+		.pdf-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+		.pdf-table th { background: var(--primary-light); padding: 10px; text-align: left; border-bottom: 1px solid var(--border-color); }
+		.pdf-table td { padding: 10px; border-bottom: 1px solid var(--border-color); vertical-align: top; }
+		.pdf-total { margin-top: 20px; padding-top: 15px; border-top: 2px solid var(--accent-color); font-size: 1.2rem; font-weight: 700; }
+		.pdf-status { display: inline-block; padding: 5px 15px; border-radius: 20px; background: var(--primary-color); color: var(--accent-color); font-size: 0.8rem; text-transform: uppercase; }
+	</style>
+</head>
+<body>
+	<div class="pdf-header">
+		<span class="brand-mark pdf-brand-mark">G</span>
+		<span class="brand-title pdf-brand-title">Gemma</span>
+		<p class="brand-subtitle mt-2">Украшения с натуральными камнями</p>
+	</div>
+
+	<h1 class="h2 mb-4">Чек по заказу №{{ order.id }}</h1>
+	
+	<div class="mb-4 text-muted">
+		<p class="mb-1">Дата: {{ order.created|date:"d.m.Y H:i" }}</p>
+		<p class="mb-1">Покупатель: {{ order.first_name }} {{ order.last_name }} ({{ order.email }})</p>
+		<p class="mb-1">Адрес доставки: {{ order.city }}, {{ order.address }}, {{ order.postal_code }}</p>
+	</div>
+
+	<table class="pdf-table">
+		<thead>
+			<tr>
+				<th>Товар</th>
+				<th class="text-end">Кол-во</th>
+				<th class="text-end">Цена</th>
+				<th class="text-end">Сумма</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for item in order.items.all %}
+			<tr>
+				<td>{{ item.product.name }}</td>
+				<td class="text-end">{{ item.quantity }}</td>
+				<td class="text-end">{{ item.price }} ₽</td>
+				<td class="text-end">{{ item.get_cost }} ₽</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+	<div class="pdf-total text-end">
+		Итого: {{ order.get_total_cost }} ₽
+	</div>
+
+	<div class="mt-5 pt-3 border-top text-muted small">
+		{% if order.paid %}<span class="pdf-status">Оплачен</span> &nbsp;{% endif %}
+		Gemma — украшения с натуральными камнями. Документ сформирован автоматически.
+	</div>
+</body>
+</html>
